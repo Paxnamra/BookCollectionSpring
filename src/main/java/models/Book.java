@@ -1,5 +1,8 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,6 +11,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class Book {
 
     @Id
@@ -19,6 +23,8 @@ public class Book {
     private Integer numberOfPages;
     private String isbn;
     private BigDecimal purchasePrice;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
     private Date purchaseDate;
 
     public String getTitle() {
