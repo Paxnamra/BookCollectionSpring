@@ -1,32 +1,36 @@
 package controllers;
 
 import java.util.List;
-import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import models.Book;
+import repositories.BookRepository;
 
 @RestController
 @RequestMapping("/api/bookcollection")
 public class BookController {
 
+    @Autowired
+    private BookRepository bookRepository;
+
     @GetMapping
     public List<Book> bookList() {
-        List<Book> books = new ArrayList<>();
-        return books;
+        return bookRepository.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void create(@RequestBody Book book) {
+        bookRepository.save(book);
 
     }
 
     @GetMapping("/{id}")
     public Book get(@PathVariable("id") long id) {
-        return new Book();
+        return bookRepository.getOne(id);
 
     }
 }
