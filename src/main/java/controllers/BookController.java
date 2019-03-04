@@ -3,6 +3,9 @@ package controllers;
 import java.util.List;
 import java.util.Optional;
 
+import exception.AuthorNotFoundException;
+import exception.BookIdMismatchException;
+import exception.TitleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,18 +32,33 @@ public class BookController {
 
     @GetMapping("/{title}")
     public List<Book> findByTitle(@PathVariable String title) {
+        try {
+            if (title == null) {
+                throw new TitleNotFoundException("No title found!");
+            }
+        } catch (TitleNotFoundException t) {
+            t.printStackTrace();
+        }
         return bookRepository.findByTitle(title);
     }
 
     @GetMapping("/{author}")
     public List<Book> findByAuthor(@PathVariable String author) {
+        try {
+            if (author == null) {
+                throw new AuthorNotFoundException("No author found!");
+            }
+        } catch (AuthorNotFoundException a) {
+            a.printStackTrace();
+        }
         return bookRepository.findByAuthor(author);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void create(@RequestBody Book book) {
-        bookRepository.save(book);
+    public Book create(@RequestBody Book book) {
+        Book saveBook = bookRepository.save(book);
+        return saveBook;
     }
 
     @DeleteMapping("/{id}")
@@ -51,6 +69,13 @@ public class BookController {
 
     @PutMapping("/{id}")
     public Book updateBook(@RequestBody Book book, @PathVariable long id) {
+        try {
+            if (book.getId() != id) {
+                throw new BookIdMismatchException("Invalid id!");
+            }
+        } catch (BookIdMismatchException e) {
+            e.printStackTrace();
+        }
         bookRepository.findOne(id);
         return bookRepository.save(book);
     }
